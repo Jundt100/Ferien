@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>Ferien Kosten</title>
+<style>
+:root{
+  --bg:#f4f6f8; --card:#fff; --text:#1c2430; --muted:#6b7686; --line:#e3e8ee;
+  --accent:#0f766e; --accent-2:#14b8a6; --danger:#dc2626; --ok:#16a34a; --warn:#d97706;
+  --shadow:0 2px 10px rgba(20,30,50,.07);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#10151c; --card:#1a222c; --text:#e8edf3; --muted:#93a0b1; --line:#2a3441; --shadow:0 2px 10px rgba(0,0,0,.35);}
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:100px}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+header{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:calc(env(safe-area-inset-top) + 18px) 0 22px;margin-bottom:16px}
+header .wrap{display:flex;align-items:center;gap:10px}
+header h1{font-size:1.35rem;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header button{background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:10px;padding:8px 12px;font-size:1rem;cursor:pointer}
+.sub{font-size:.85rem;opacity:.9}
+.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.year{font-size:.85rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin:22px 4px 8px}
+.trip{cursor:pointer;transition:transform .1s}
+.trip:active{transform:scale(.99)}
+.trip .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.trip h3{margin:0;font-size:1.1rem}
+.muted{color:var(--muted);font-size:.88rem}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:10px 0 6px}
+.bar>i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .3s}
+.bar.warn>i{background:var(--warn)} .bar.over>i{background:var(--danger)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stats b{display:block;font-size:1.15rem}
+.stats span{font-size:.78rem;color:var(--muted)}
+.neg{color:var(--danger)}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.cat{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:10px 8px;text-align:center;cursor:pointer;border:2px solid transparent}
+.cat.on{border-color:var(--accent)}
+.cat .e{font-size:1.4rem}
+.cat .n{font-size:.76rem;color:var(--muted);display:block}
+.cat b{font-size:.95rem}
+.day{font-size:.82rem;font-weight:700;color:var(--muted);margin:18px 4px 6px;display:flex;justify-content:space-between}
+.exp{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--card);border-radius:14px;box-shadow:var(--shadow);margin-bottom:8px;cursor:pointer}
+.exp .ic{font-size:1.5rem;width:40px;height:40px;display:grid;place-items:center;background:var(--bg);border-radius:12px;flex:none}
+.exp .mid{flex:1;min-width:0}
+.exp .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp .note{font-size:.82rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp .amt{font-weight:700;white-space:nowrap}
+.fab{position:fixed;right:20px;bottom:calc(env(safe-area-inset-bottom) + 20px);width:62px;height:62px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:2rem;line-height:1;box-shadow:0 6px 18px rgba(15,118,110,.45);cursor:pointer;z-index:5}
+.fab:active{transform:scale(.94)}
+.empty{text-align:center;color:var(--muted);padding:40px 10px}
+dialog{border:0;border-radius:20px;padding:0;width:min(440px,calc(100vw - 24px));background:var(--card);color:var(--text);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog form{padding:20px;display:grid;gap:12px}
+dialog h2{margin:0 0 4px;font-size:1.2rem}
+label{display:grid;gap:5px;font-size:.84rem;color:var(--muted);font-weight:600}
+input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:70px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btns{display:flex;gap:8px;margin-top:6px}
+.btns button{flex:1;padding:12px;border-radius:12px;border:0;font:inherit;font-weight:600;cursor:pointer}
+.primary{background:var(--accent);color:#fff}
+.ghost{background:var(--bg);color:var(--text)}
+.del{background:transparent;color:var(--danger);flex:0 0 auto!important}
+#toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:12px;font-size:.9rem;max-width:90vw;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+#toast.show{opacity:1}
+#status{font-size:.75rem;opacity:.9}
+</style>
+</head>
+<body>
+
+<header><div class="wrap" id="head"></div></header>
+<main class="wrap" id="app"></main>
+<button class="fab" id="fab" aria-label="Hinzufügen">+</button>
+
+<dialog id="dlgExp">
+  <form id="fExp" method="dialog">
+    <h2 id="expTitle">Ausgabe</h2>
+    <label>Bezeichnung<input name="title" required maxlength="80" placeholder="z.B. Abendessen am Hafen"></label>
+    <div class="two">
+      <label>Betrag<input name="amount" type="number" step="0.01" min="0" required inputmode="decimal" placeholder="0.00"></label>
+      <label>Datum bezahlt<input name="date" type="date" required></label>
+    </div>
+    <label>Kategorie<select name="category" id="catSel"></select></label>
+    <label>Bemerkung<textarea name="note" maxlength="500" placeholder="optional"></textarea></label>
+    <div class="btns">
+      <button type="button" class="del" id="expDel">Löschen</button>
+      <button type="button" class="ghost" data-close>Abbrechen</button>
+      <button type="submit" class="primary">Speichern</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgTrip">
+  <form id="fTrip" method="dialog">
+    <h2 id="tripTitle">Neue Ferien</h2>
+    <label>Name<input name="name" required maxlength="60" placeholder="z.B. Mallorca 2026"></label>
+    <div class="two">
+      <label>Von<input name="start" type="date" required></label>
+      <label>Bis<input name="end" type="date"></label>
+    </div>
+    <div class="two">
+      <label>Budget<input name="budget" type="number" step="1" min="0" inputmode="decimal" placeholder="z.B. 3000"></label>
+      <label>Währung<select name="currency"><option>CHF</option><option>EUR</option><option>USD</option><option>GBP</option></select></label>
+    </div>
+    <div class="btns">
+      <button type="button" class="del" id="tripDel">Löschen</button>
+      <button type="button" class="ghost" data-close>Abbrechen</button>
+      <button type="submit" class="primary">Speichern</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, getDocs, writeBatch,
+         onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+/* ---------- Firebase-Konfiguration ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyBxYbZo2RiEZEDJfkDWrOTUQ2Qiz0JnvU0",
+  authDomain: "ferien-8bf62.firebaseapp.com",
+  projectId: "ferien-8bf62",
+  storageBucket: "ferien-8bf62.firebasestorage.app",
+  messagingSenderId: "884604279516",
+  appId: "1:884604279516:web:1bd16c30306fdec4ddb219",
+  measurementId: "G-TM4298JMXB"
+};
+const db = getFirestore(initializeApp(firebaseConfig));
+
+/* ---------- Konstanten & Helfer ---------- */
+const CATS = [
+  { id:"Shopping",          e:"🛍️" },
+  { id:"Essen",             e:"🍽️" },
+  { id:"Drinks",            e:"🍹" },
+  { id:"Ausflug / Event",   e:"🎟️" },
+  { id:"Taxi / Uber",       e:"🚕" },
+  { id:"Autovermietung",    e:"🚗" },
+];
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
+const money = (n, cur="CHF") => new Intl.NumberFormat("de-CH", { style:"currency", currency:cur, minimumFractionDigits:2 }).format(n || 0);
+const fmtDate = (s, long) => s ? new Date(s + "T12:00:00").toLocaleDateString("de-CH", long ? { weekday:"long", day:"numeric", month:"long" } : { day:"numeric", month:"short", year:"numeric" }) : "";
+const catOf = id => CATS.find(c => c.id === id) || { id, e:"💳" };
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 3500); }
+function fail(e){ console.error(e); toast(e.code === "permission-denied" ? "Keine Berechtigung – bitte Firestore-Regeln prüfen." : "Fehler: " + (e.message || e)); }
+
+/* ---------- Zustand ---------- */
+let trips = [];
+let expenses = [];
+let tripId = null;
+let filterCat = null;
+let unsubExp = null;
+let editingExp = null;
+let editingTrip = null;
+let connected = false;
+
+onSnapshot(collection(db, "ferien"), snap => {
+  connected = true;
+  trips = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+  render();
+}, fail);
+
+function openTrip(id){
+  if (unsubExp) { unsubExp(); unsubExp = null; }
+  tripId = id; filterCat = null; expenses = [];
+  if (id) {
+    unsubExp = onSnapshot(collection(db, "ferien", id, "ausgaben"), snap => {
+      expenses = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+      render();
+    }, fail);
+  }
+  render();
+}
+function route(){
+  const m = location.hash.match(/^#\/trip\/(.+)$/);
+  openTrip(m ? m[1] : null);
+}
+window.addEventListener("hashchange", route);
+
+/* ---------- Rendering ---------- */
+function render(){
+  const trip = trips.find(t => t.id === tripId);
+  if (tripId && !trip) {
+    $("#head").innerHTML = `<h1>Ferien Kosten</h1>`;
+    $("#app").innerHTML = `<div class="empty">${connected ? "Ferien nicht gefunden." : "Lade…"}<br><br><button class="ghost" style="padding:10px 16px;border:0;border-radius:10px" onclick="location.hash=''">Zur Übersicht</button></div>`;
+    return;
+  }
+  trip ? renderTrip(trip) : renderHome();
+}
+
+function sumFor(list){ return list.reduce((a, x) => a + (+x.amount || 0), 0); }
+
+function renderHome(){
+  $("#head").innerHTML = `<div style="flex:1"><h1>🌴 Meine Ferien</h1><div class="sub">${trips.length} Reise${trips.length === 1 ? "" : "n"} <span id="status">${connected ? "· ☁️ synchronisiert" : "· verbinde…"}</span></div></div>`;
+  if (!trips.length) {
+    $("#app").innerHTML = `<div class="empty">${connected ? "Noch keine Ferien angelegt.<br>Tippe auf <b>+</b>, um die erste Reise zu erstellen." : "Verbinde mit Firebase…"}</div>`;
+    return;
+  }
+  const byYear = {};
+  [...trips].sort((a, b) => (b.start || "").localeCompare(a.start || "")).forEach(t => {
+    const y = (t.start || "").slice(0, 4) || "Ohne Datum";
+    (byYear[y] ||= []).push(t);
+  });
+  $("#app").innerHTML = Object.keys(byYear).sort().reverse().map(y => `
+    <div class="year">${y}</div>
+    ${byYear[y].map(t => {
+      const spent = t.total || 0;
+      const pct = t.budget > 0 ? Math.min(100, spent / t.budget * 100) : 0;
+      const cls = t.budget > 0 ? (spent > t.budget ? "over" : pct > 85 ? "warn" : "") : "";
+      return `<div class="card trip" data-id="${t.id}">
+        <div class="row"><h3>${esc(t.name)}</h3><b>${money(spent, t.currency)}</b></div>
+        <div class="muted">${fmtDate(t.start)}${t.end ? " – " + fmtDate(t.end) : ""}</div>
+        ${t.budget > 0 ? `<div class="bar ${cls}"><i style="width:${pct}%"></i></div>
+        <div class="muted">Budget ${money(t.budget, t.currency)} · ${spent > t.budget ? `<span class="neg">${money(spent - t.budget, t.currency)} drüber</span>` : `${money(t.budget - spent, t.currency)} übrig`}</div>` : ""}
+      </div>`;
+    }).join("")}`).join("");
+  document.querySelectorAll(".trip").forEach(el => el.onclick = () => location.hash = "#/trip/" + el.dataset.id);
+}
+
+function renderTrip(t){
+  const cur = t.currency || "CHF";
+  const total = sumFor(expenses);
+  const budget = +t.budget || 0;
+  const left = budget - total;
+  const pct = budget > 0 ? Math.min(100, total / budget * 100) : 0;
+  const cls = budget > 0 ? (total > budget ? "over" : pct > 85 ? "warn" : "") : "";
+
+  $("#head").innerHTML = `<button id="back">←</button>
+    <div style="flex:1;min-width:0"><h1>${esc(t.name)}</h1><div class="sub">${fmtDate(t.start)}${t.end ? " – " + fmtDate(t.end) : ""}</div></div>
+    <button id="editTrip">✏️</button>`;
+  $("#back").onclick = () => location.hash = "";
+  $("#editTrip").onclick = () => openTripDialog(t);
+
+  const list = expenses.filter(e => !filterCat || e.category === filterCat)
+    .sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.createdAtMs || 0) - (a.createdAtMs || 0));
+  const days = {};
+  list.forEach(e => (days[e.date] ||= []).push(e));
+
+  $("#app").innerHTML = `
+    <div class="card">
+      <div class="stats">
+        <div><b>${budget > 0 ? money(budget, cur) : "–"}</b><span>Budget</span></div>
+        <div><b>${money(total, cur)}</b><span>Ausgegeben</span></div>
+        <div><b class="${left < 0 ? "neg" : ""}">${budget > 0 ? money(left, cur) : "–"}</b><span>${left < 0 ? "Überzogen" : "Übrig"}</span></div>
+      </div>
+      ${budget > 0 ? `<div class="bar ${cls}"><i style="width:${pct}%"></i></div><div class="muted" style="text-align:center">${(total / budget * 100).toFixed(0)}% des Budgets</div>` : `<div class="muted" style="text-align:center;margin-top:8px">Kein Budget gesetzt – über ✏️ festlegen</div>`}
+    </div>
+    <div class="cats">${CATS.map(c => {
+      const s = sumFor(expenses.filter(e => e.category === c.id));
+      return `<div class="cat ${filterCat === c.id ? "on" : ""}" data-cat="${esc(c.id)}"><div class="e">${c.e}</div><span class="n">${esc(c.id)}</span><b>${money(s, cur)}</b></div>`;
+    }).join("")}</div>
+    ${filterCat ? `<div class="muted" style="margin:0 4px 8px">Filter: ${esc(filterCat)} (nochmals tippen zum Aufheben)</div>` : ""}
+    ${!list.length ? `<div class="empty">Noch keine Ausgaben.<br>Tippe auf <b>+</b>.</div>` :
+      Object.keys(days).sort().reverse().map(d => `
+        <div class="day"><span>${fmtDate(d, true)}</span><span>${money(sumFor(days[d]), cur)}</span></div>
+        ${days[d].map(e => `<div class="exp" data-id="${e.id}">
+          <div class="ic">${catOf(e.category).e}</div>
+          <div class="mid"><div class="t">${esc(e.title)}</div><div class="note">${esc(e.category)}${e.note ? " · " + esc(e.note) : ""}</div></div>
+          <div class="amt">${money(e.amount, cur)}</div></div>`).join("")}`).join("")}`;
+
+  document.querySelectorAll(".cat").forEach(el => el.onclick = () => { filterCat = filterCat === el.dataset.cat ? null : el.dataset.cat; render(); });
+  document.querySelectorAll(".exp").forEach(el => el.onclick = () => openExpDialog(expenses.find(e => e.id === el.dataset.id)));
+}
+
+/* ---------- Dialoge: Ausgabe ---------- */
+$("#catSel").innerHTML = CATS.map(c => `<option value="${esc(c.id)}">${c.e} ${esc(c.id)}</option>`).join("");
+
+function openExpDialog(e){
+  editingExp = e || null;
+  const f = $("#fExp");
+  f.reset();
+  $("#expTitle").textContent = e ? "Ausgabe bearbeiten" : "Neue Ausgabe";
+  $("#expDel").style.display = e ? "" : "none";
+  f.title.value = e?.title || "";
+  f.amount.value = e?.amount ?? "";
+  f.date.value = e?.date || today();
+  f.category.value = e?.category || filterCat || CATS[0].id;
+  f.note.value = e?.note || "";
+  $("#dlgExp").showModal();
+  if (!e) setTimeout(() => f.title.focus(), 50);
+}
+
+$("#fExp").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const f = ev.target;
+  const data = { title:f.title.value.trim(), amount:parseFloat(f.amount.value), date:f.date.value, category:f.category.value, note:f.note.value.trim() };
+  if (!data.title || isNaN(data.amount)) return;
+  $("#dlgExp").close();
+  try {
+    if (editingExp) await setDoc(doc(db, "ferien", tripId, "ausgaben", editingExp.id), data, { merge:true });
+    else await addDoc(collection(db, "ferien", tripId, "ausgaben"), { ...data, createdAtMs:Date.now() });
+    await updateTotal();
+  } catch (e) { fail(e); }
+});
+
+$("#expDel").onclick = async () => {
+  if (!editingExp || !confirm("Diese Ausgabe löschen?")) return;
+  $("#dlgExp").close();
+  try { await deleteDoc(doc(db, "ferien", tripId, "ausgaben", editingExp.id)); await updateTotal(); } catch (e) { fail(e); }
+};
+
+// Gesamtsumme in der Reise speichern (für die Übersicht)
+async function updateTotal(){
+  const snap = await getDocs(collection(db, "ferien", tripId, "ausgaben"));
+  const total = snap.docs.reduce((a, d) => a + (+d.data().amount || 0), 0);
+  await setDoc(doc(db, "ferien", tripId), { total }, { merge:true });
+}
+
+/* ---------- Dialoge: Reise ---------- */
+function openTripDialog(t){
+  editingTrip = t || null;
+  const f = $("#fTrip");
+  f.reset();
+  $("#tripTitle").textContent = t ? "Ferien bearbeiten" : "Neue Ferien";
+  $("#tripDel").style.display = t ? "" : "none";
+  f.name.value = t?.name || "";
+  f.start.value = t?.start || today();
+  f.end.value = t?.end || "";
+  f.budget.value = t?.budget || "";
+  f.currency.value = t?.currency || "CHF";
+  $("#dlgTrip").showModal();
+  if (!t) setTimeout(() => f.name.focus(), 50);
+}
+
+$("#fTrip").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const f = ev.target;
+  const data = { name:f.name.value.trim(), start:f.start.value, end:f.end.value, budget:parseFloat(f.budget.value) || 0, currency:f.currency.value };
+  if (!data.name) return;
+  $("#dlgTrip").close();
+  try {
+    if (editingTrip) await setDoc(doc(db, "ferien", editingTrip.id), data, { merge:true });
+    else {
+      const ref = await addDoc(collection(db, "ferien"), { ...data, total:0, createdAt:serverTimestamp() });
+      location.hash = "#/trip/" + ref.id;
+    }
+  } catch (e) { fail(e); }
+});
+
+$("#tripDel").onclick = async () => {
+  if (!editingTrip || !confirm(`„${editingTrip.name}“ samt allen Ausgaben endgültig löschen?`)) return;
+  $("#dlgTrip").close();
+  try {
+    const snap = await getDocs(collection(db, "ferien", editingTrip.id, "ausgaben"));
+    const batch = writeBatch(db);
+    snap.docs.forEach(d => batch.delete(d.ref));
+    batch.delete(doc(db, "ferien", editingTrip.id));
+    await batch.commit();
+    location.hash = "";
+  } catch (e) { fail(e); }
+};
+
+/* ---------- Allgemein ---------- */
+document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => b.closest("dialog").close());
+document.querySelectorAll("dialog").forEach(d => d.addEventListener("click", e => { if (e.target === d) d.close(); }));
+$("#fab").onclick = () => tripId ? openExpDialog() : openTripDialog();
+
+route();
+</script>
+</body>
+</html>
