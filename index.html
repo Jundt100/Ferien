@@ -3,125 +3,231 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f766e">
+<meta name="theme-color" content="#ff7a59">
 <title>Ferien Kosten</title>
 <style>
 :root{
-  --bg:#f4f6f8; --card:#fff; --text:#1c2430; --muted:#6b7686; --line:#e3e8ee;
-  --accent:#0f766e; --accent-2:#14b8a6; --danger:#dc2626; --ok:#16a34a; --warn:#d97706;
-  --shadow:0 2px 10px rgba(20,30,50,.07);
+  --bg:#fff7ef; --card:#ffffff; --text:#2b2340; --muted:#8a7f9c; --line:#f0e6dc;
+  --coral:#ff6b6b; --orange:#ff9f43; --teal:#14b8a6; --violet:#8b5cf6;
+  --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+  --shadow:0 6px 24px rgba(120,70,40,.10);
+  --radius:22px;
 }
 @media (prefers-color-scheme:dark){
-  :root{--bg:#10151c; --card:#1a222c; --text:#e8edf3; --muted:#93a0b1; --line:#2a3441; --shadow:0 2px 10px rgba(0,0,0,.35);}
+  :root{--bg:#171322; --card:#221c33; --text:#f4effc; --muted:#a79bbd; --line:#322a47; --shadow:0 6px 24px rgba(0,0,0,.4);}
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:100px}
-.wrap{max-width:760px;margin:0 auto;padding:0 16px}
-header{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:calc(env(safe-area-inset-top) + 18px) 0 22px;margin-bottom:16px}
-header .wrap{display:flex;align-items:center;gap:10px}
-header h1{font-size:1.35rem;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-header button{background:rgba(255,255,255,.2);color:#fff;border:0;border-radius:10px;padding:8px 12px;font-size:1rem;cursor:pointer}
-.sub{font-size:.85rem;opacity:.9}
-.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
-.year{font-size:.85rem;font-weight:700;color:var(--muted);letter-spacing:.08em;margin:22px 4px 8px}
-.trip{cursor:pointer;transition:transform .1s}
-.trip:active{transform:scale(.99)}
-.trip .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
-.trip h3{margin:0;font-size:1.1rem}
-.muted{color:var(--muted);font-size:.88rem}
-.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden;margin:10px 0 6px}
-.bar>i{display:block;height:100%;background:var(--ok);border-radius:99px;transition:width .3s}
-.bar.warn>i{background:var(--warn)} .bar.over>i{background:var(--danger)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
-.stats b{display:block;font-size:1.15rem}
-.stats span{font-size:.78rem;color:var(--muted)}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.4 ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  padding-bottom:120px;overflow-x:hidden}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px;position:relative}
+ 
+/* ---------- Header ---------- */
+header{position:relative;overflow:hidden;color:#fff;
+  padding:calc(env(safe-area-inset-top) + 22px) 0 54px;
+  background:linear-gradient(120deg,#ff6b6b,#ff9f43,#ffd166,#14b8a6,#8b5cf6,#ff6b6b);
+  background-size:300% 300%;animation:flow 16s ease infinite;
+  border-radius:0 0 36px 36px;box-shadow:0 10px 30px rgba(255,107,107,.3)}
+@keyframes flow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+header .float{position:absolute;font-size:28px;opacity:.35;animation:drift 9s ease-in-out infinite;pointer-events:none;user-select:none}
+@keyframes drift{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-18px) rotate(10deg)}}
+header .wrap{display:flex;align-items:center;gap:12px;z-index:1}
+header h1{font-size:1.5rem;margin:0;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 2px 8px rgba(0,0,0,.15)}
+.sub{font-size:.88rem;opacity:.95}
+.hbtn{background:rgba(255,255,255,.25);backdrop-filter:blur(6px);color:#fff;border:0;border-radius:14px;
+  width:44px;height:44px;font-size:1.2rem;cursor:pointer;transition:transform .2s,background .2s;flex:none}
+.hbtn:hover{background:rgba(255,255,255,.4);transform:scale(1.08)}
+.hbtn:active{transform:scale(.9)}
+.bigemoji{font-size:2.4rem;cursor:pointer;display:inline-block;transition:transform .3s;flex:none;user-select:none}
+.bigemoji:hover{transform:scale(1.2) rotate(-8deg)}
+.bigemoji.spin{animation:spin .8s cubic-bezier(.3,1.4,.5,1)}
+@keyframes spin{to{transform:rotate(360deg) scale(1.2)}}
+main{margin-top:-30px}
+ 
+/* ---------- Animationen ---------- */
+.rise{animation:rise .55s cubic-bezier(.2,.9,.3,1.1) both;animation-delay:calc(var(--i,0) * 60ms)}
+@keyframes rise{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.noanim .rise{animation:none}
+.pop{animation:popin .6s cubic-bezier(.2,1.6,.4,1) both!important}
+@keyframes popin{0%{transform:scale(.6);opacity:0;background:var(--orange)}60%{transform:scale(1.04);opacity:1}100%{transform:none}}
+ 
+/* ---------- Karten ---------- */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+.year{font-size:.8rem;font-weight:800;color:var(--muted);letter-spacing:.14em;margin:26px 6px 10px;display:flex;align-items:center;gap:10px}
+.year::after{content:"";flex:1;height:2px;background:var(--line);border-radius:2px}
+.trip{display:flex;align-items:center;gap:14px;cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .25s cubic-bezier(.2,1.4,.4,1),box-shadow .25s}
+.trip:hover{transform:translateY(-4px) scale(1.01);box-shadow:0 14px 34px rgba(120,70,40,.18)}
+.trip:active{transform:scale(.98)}
+.badge{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:1.9rem;flex:none;
+  background:var(--g);box-shadow:0 6px 14px rgba(0,0,0,.15);transition:transform .4s}
+.trip:hover .badge{transform:rotate(-10deg) scale(1.1)}
+.trip .mid{flex:1;min-width:0}
+.trip h3{margin:0;font-size:1.1rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.muted{color:var(--muted);font-size:.86rem}
+.tot{font-weight:800;font-size:1.05rem;margin-top:2px}
+.mini{position:relative;width:54px;height:54px;flex:none}
+.mini svg{width:100%;height:100%;transform:rotate(-90deg)}
+.mini b{position:absolute;inset:0;display:grid;place-items:center;font-size:.72rem;font-weight:800}
 .neg{color:var(--danger)}
-.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.cat{background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:10px 8px;text-align:center;cursor:pointer;border:2px solid transparent}
-.cat.on{border-color:var(--accent)}
-.cat .e{font-size:1.4rem}
-.cat .n{font-size:.76rem;color:var(--muted);display:block}
-.cat b{font-size:.95rem}
-.day{font-size:.82rem;font-weight:700;color:var(--muted);margin:18px 4px 6px;display:flex;justify-content:space-between}
-.exp{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--card);border-radius:14px;box-shadow:var(--shadow);margin-bottom:8px;cursor:pointer}
-.exp .ic{font-size:1.5rem;width:40px;height:40px;display:grid;place-items:center;background:var(--bg);border-radius:12px;flex:none}
+ 
+/* ---------- Ring ---------- */
+.hero{text-align:center;padding:22px 16px 18px}
+.ringbox{position:relative;width:min(260px,70vw);aspect-ratio:1;margin:0 auto}
+.ringbox svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
+.ringbox circle{fill:none;stroke-width:20}
+.ringbox .track{stroke:var(--line)}
+.ringbox .seg{transition:stroke-dasharray .9s cubic-bezier(.3,.9,.3,1)}
+.ringbox.over{animation:throb 1.6s ease-in-out infinite}
+@keyframes throb{50%{transform:scale(1.025)}}
+.center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.center .lbl{font-size:.8rem;color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.center .num{font-size:1.9rem;font-weight:900;letter-spacing:-.02em}
+.center .em{font-size:1.6rem;animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-5px) rotate(6deg)}}
+.mood{display:inline-block;margin-top:14px;padding:9px 16px;border-radius:99px;font-weight:700;font-size:.92rem;background:var(--mc);color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.pills{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.pill{background:var(--bg);border-radius:16px;padding:10px 6px;transition:transform .2s}
+.pill:hover{transform:translateY(-3px)}
+.pill b{display:block;font-size:1rem;font-weight:800}
+.pill span{font-size:.74rem;color:var(--muted);font-weight:600}
+ 
+/* ---------- Kategorien ---------- */
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.cat{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:12px 6px;text-align:center;cursor:pointer;
+  border:2.5px solid transparent;position:relative;overflow:hidden;transition:transform .2s cubic-bezier(.2,1.6,.4,1),border-color .2s}
+.cat::before{content:"";position:absolute;inset:0;background:var(--c);opacity:.12}
+.cat:hover{transform:translateY(-4px)}
+.cat:active{transform:scale(.92)}
+.cat.on{border-color:var(--c);transform:translateY(-3px) scale(1.04)}
+.cat .e{font-size:1.7rem;position:relative;display:block;transition:transform .3s}
+.cat:hover .e,.cat.on .e{transform:scale(1.25) rotate(-8deg)}
+.cat .n{font-size:.72rem;color:var(--muted);display:block;font-weight:700;position:relative;margin:2px 0}
+.cat b{font-size:.9rem;position:relative;font-weight:800}
+ 
+/* ---------- Ausgaben ---------- */
+.day{font-size:.82rem;font-weight:800;color:var(--muted);margin:22px 6px 8px;display:flex;justify-content:space-between}
+.exp{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--card);border-radius:18px;box-shadow:var(--shadow);
+  margin-bottom:9px;cursor:pointer;transition:transform .2s cubic-bezier(.2,1.4,.4,1)}
+.exp:hover{transform:translateX(5px)}
+.exp:active{transform:scale(.97)}
+.exp .ic{font-size:1.5rem;width:46px;height:46px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 18%,transparent);border-radius:15px;flex:none}
 .exp .mid{flex:1;min-width:0}
-.exp .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.exp .note{font-size:.82rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.exp .amt{font-weight:700;white-space:nowrap}
-.fab{position:fixed;right:20px;bottom:calc(env(safe-area-inset-bottom) + 20px);width:62px;height:62px;border-radius:50%;border:0;background:var(--accent);color:#fff;font-size:2rem;line-height:1;box-shadow:0 6px 18px rgba(15,118,110,.45);cursor:pointer;z-index:5}
-.fab:active{transform:scale(.94)}
-.empty{text-align:center;color:var(--muted);padding:40px 10px}
-dialog{border:0;border-radius:20px;padding:0;width:min(440px,calc(100vw - 24px));background:var(--card);color:var(--text);box-shadow:0 20px 60px rgba(0,0,0,.35)}
-dialog::backdrop{background:rgba(0,0,0,.5)}
-dialog form{padding:20px;display:grid;gap:12px}
-dialog h2{margin:0 0 4px;font-size:1.2rem}
-label{display:grid;gap:5px;font-size:.84rem;color:var(--muted);font-weight:600}
-input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
-textarea{resize:vertical;min-height:70px}
+.exp .t{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp .note{font-size:.8rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp .amt{font-weight:800;white-space:nowrap}
+ 
+.empty{text-align:center;color:var(--muted);padding:44px 10px;font-weight:600}
+.empty .big{font-size:3.4rem;display:block;animation:bob 2.6s ease-in-out infinite;margin-bottom:6px}
+ 
+/* ---------- FAB ---------- */
+.fab{position:fixed;right:20px;bottom:calc(env(safe-area-inset-bottom) + 20px);width:68px;height:68px;border-radius:50%;border:0;
+  background:linear-gradient(135deg,#ff6b6b,#ff9f43);color:#fff;font-size:2.3rem;line-height:1;font-weight:300;
+  box-shadow:0 10px 24px rgba(255,107,107,.5);cursor:pointer;z-index:5;transition:transform .3s cubic-bezier(.2,1.6,.4,1)}
+.fab::after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid #ff9f43;animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.6);opacity:0}}
+.fab:hover{transform:scale(1.1) rotate(90deg)}
+.fab:active{transform:scale(.9) rotate(90deg)}
+ 
+/* ---------- Dialoge ---------- */
+dialog{border:0;border-radius:28px;padding:0;width:min(460px,calc(100vw - 20px));background:var(--card);color:var(--text);
+  box-shadow:0 30px 80px rgba(0,0,0,.4);max-height:92vh}
+dialog[open]{animation:dlg .45s cubic-bezier(.2,1.3,.4,1)}
+dialog::backdrop{background:rgba(40,20,60,.5);backdrop-filter:blur(4px);animation:fade .3s}
+@keyframes dlg{from{opacity:0;transform:translateY(40px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}}
+dialog form{padding:22px;display:grid;gap:14px}
+dialog h2{margin:0;font-size:1.3rem;font-weight:800}
+label.f{display:grid;gap:6px;font-size:.82rem;color:var(--muted);font-weight:700}
+input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:2px solid transparent;border-radius:14px;padding:12px 14px;width:100%;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,159,67,.2)}
+textarea{resize:vertical;min-height:72px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.btns{display:flex;gap:8px;margin-top:6px}
-.btns button{flex:1;padding:12px;border-radius:12px;border:0;font:inherit;font-weight:600;cursor:pointer}
-.primary{background:var(--accent);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{cursor:pointer}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:99px;background:var(--bg);font-weight:700;font-size:.85rem;
+  border:2px solid transparent;transition:transform .2s cubic-bezier(.2,1.6,.4,1),background .2s}
+.chip:hover span{transform:scale(1.07)}
+.chip input:checked+span{background:color-mix(in srgb,var(--c,#ff9f43) 22%,transparent);border-color:var(--c,#ff9f43);transform:scale(1.08)}
+.chip.em span{font-size:1.4rem;padding:6px 10px}
+.btns{display:flex;gap:8px;margin-top:4px}
+.btns button{flex:1;padding:14px;border-radius:16px;border:0;font:inherit;font-weight:800;cursor:pointer;transition:transform .15s}
+.btns button:active{transform:scale(.95)}
+.primary{background:linear-gradient(135deg,#ff6b6b,#ff9f43);color:#fff;box-shadow:0 8px 18px rgba(255,107,107,.35)}
 .ghost{background:var(--bg);color:var(--text)}
 .del{background:transparent;color:var(--danger);flex:0 0 auto!important}
-#toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:12px;font-size:.9rem;max-width:90vw;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
-#toast.show{opacity:1}
-#status{font-size:.75rem;opacity:.9}
+ 
+#toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);background:#2b2340;color:#fff;padding:12px 18px;border-radius:16px;
+  font-size:.9rem;max-width:90vw;opacity:0;pointer-events:none;transition:all .3s;z-index:30}
+#toast.show{opacity:1;transform:translateX(-50%)}
+.confetti{position:fixed;pointer-events:none;z-index:50;font-size:22px;will-change:transform}
+ 
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
 </style>
 </head>
 <body>
-
-<header><div class="wrap" id="head"></div></header>
+ 
+<header>
+  <span class="float" style="left:6%;top:18%;animation-delay:0s">☀️</span>
+  <span class="float" style="left:28%;top:60%;animation-delay:-2s">🐚</span>
+  <span class="float" style="left:52%;top:12%;animation-delay:-4s">✈️</span>
+  <span class="float" style="left:74%;top:55%;animation-delay:-6s">🌴</span>
+  <span class="float" style="left:90%;top:15%;animation-delay:-3s">🍹</span>
+  <div class="wrap" id="head"></div>
+</header>
 <main class="wrap" id="app"></main>
 <button class="fab" id="fab" aria-label="Hinzufügen">+</button>
-
+ 
 <dialog id="dlgExp">
   <form id="fExp" method="dialog">
-    <h2 id="expTitle">Ausgabe</h2>
-    <label>Bezeichnung<input name="title" required maxlength="80" placeholder="z.B. Abendessen am Hafen"></label>
+    <h2 id="expTitle">Neue Ausgabe</h2>
+    <label class="f">Was hast du bezahlt?<input name="title" required maxlength="80" placeholder="z.B. Abendessen am Hafen"></label>
     <div class="two">
-      <label>Betrag<input name="amount" type="number" step="0.01" min="0" required inputmode="decimal" placeholder="0.00"></label>
-      <label>Datum bezahlt<input name="date" type="date" required></label>
+      <label class="f">Betrag<input name="amount" type="number" step="0.01" min="0" required inputmode="decimal" placeholder="0.00"></label>
+      <label class="f">Datum bezahlt<input name="date" type="date" required></label>
     </div>
-    <label>Kategorie<select name="category" id="catSel"></select></label>
-    <label>Bemerkung<textarea name="note" maxlength="500" placeholder="optional"></textarea></label>
+    <div class="f" style="display:grid;gap:6px;font-size:.82rem;color:var(--muted);font-weight:700">Kategorie<div class="chips" id="catChips"></div></div>
+    <label class="f">Bemerkung<textarea name="note" maxlength="500" placeholder="optional"></textarea></label>
     <div class="btns">
-      <button type="button" class="del" id="expDel">Löschen</button>
+      <button type="button" class="del" id="expDel">🗑️</button>
       <button type="button" class="ghost" data-close>Abbrechen</button>
       <button type="submit" class="primary">Speichern</button>
     </div>
   </form>
 </dialog>
-
+ 
 <dialog id="dlgTrip">
   <form id="fTrip" method="dialog">
     <h2 id="tripTitle">Neue Ferien</h2>
-    <label>Name<input name="name" required maxlength="60" placeholder="z.B. Mallorca 2026"></label>
+    <label class="f">Name<input name="name" required maxlength="60" placeholder="z.B. Mallorca 2026"></label>
+    <div class="f" style="display:grid;gap:6px;font-size:.82rem;color:var(--muted);font-weight:700">Symbol<div class="chips" id="emojiChips"></div></div>
     <div class="two">
-      <label>Von<input name="start" type="date" required></label>
-      <label>Bis<input name="end" type="date"></label>
+      <label class="f">Von<input name="start" type="date" required></label>
+      <label class="f">Bis<input name="end" type="date"></label>
     </div>
     <div class="two">
-      <label>Budget<input name="budget" type="number" step="1" min="0" inputmode="decimal" placeholder="z.B. 3000"></label>
-      <label>Währung<select name="currency"><option>CHF</option><option>EUR</option><option>USD</option><option>GBP</option></select></label>
+      <label class="f">Budget<input name="budget" type="number" step="1" min="0" inputmode="decimal" placeholder="z.B. 3000"></label>
+      <label class="f">Währung<select name="currency"><option>CHF</option><option>EUR</option><option>USD</option><option>GBP</option></select></label>
     </div>
     <div class="btns">
-      <button type="button" class="del" id="tripDel">Löschen</button>
+      <button type="button" class="del" id="tripDel">🗑️</button>
       <button type="button" class="ghost" data-close>Abbrechen</button>
       <button type="submit" class="primary">Speichern</button>
     </div>
   </form>
 </dialog>
-
+ 
 <div id="toast"></div>
-
+ 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, getDocs, writeBatch,
          onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-
+ 
 /* ---------- Firebase-Konfiguration ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyBxYbZo2RiEZEDJfkDWrOTUQ2Qiz0JnvU0",
@@ -133,150 +239,244 @@ const firebaseConfig = {
   measurementId: "G-TM4298JMXB"
 };
 const db = getFirestore(initializeApp(firebaseConfig));
-
+ 
 /* ---------- Konstanten & Helfer ---------- */
 const CATS = [
-  { id:"Shopping",          e:"🛍️" },
-  { id:"Essen",             e:"🍽️" },
-  { id:"Drinks",            e:"🍹" },
-  { id:"Ausflug / Event",   e:"🎟️" },
-  { id:"Taxi / Uber",       e:"🚕" },
-  { id:"Autovermietung",    e:"🚗" },
+  { id:"Shopping",        e:"🛍️", c:"#ec4899" },
+  { id:"Essen",           e:"🍽️", c:"#f97316" },
+  { id:"Drinks",          e:"🍹", c:"#a855f7" },
+  { id:"Ausflug / Event", e:"🎟️", c:"#14b8a6" },
+  { id:"Taxi / Uber",     e:"🚕", c:"#eab308" },
+  { id:"Autovermietung",  e:"🚗", c:"#3b82f6" },
+];
+const EMOJIS = ["🌴","🏖️","✈️","🏔️","🎿","🏙️","🚢","🏕️","🍕","🌍","🎡","🐚"];
+const GRADS = [
+  "linear-gradient(135deg,#ff6b6b,#ff9f43)","linear-gradient(135deg,#14b8a6,#3b82f6)",
+  "linear-gradient(135deg,#a855f7,#ec4899)","linear-gradient(135deg,#f59e0b,#ef4444)",
+  "linear-gradient(135deg,#22c55e,#14b8a6)","linear-gradient(135deg,#6366f1,#a855f7)"
 ];
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
 const today = () => { const d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
-const money = (n, cur="CHF") => new Intl.NumberFormat("de-CH", { style:"currency", currency:cur, minimumFractionDigits:2 }).format(n || 0);
+const money = (n, cur="CHF") => new Intl.NumberFormat("de-CH", { style:"currency", currency:cur }).format(n || 0);
 const fmtDate = (s, long) => s ? new Date(s + "T12:00:00").toLocaleDateString("de-CH", long ? { weekday:"long", day:"numeric", month:"long" } : { day:"numeric", month:"short", year:"numeric" }) : "";
-const catOf = id => CATS.find(c => c.id === id) || { id, e:"💳" };
+const catOf = id => CATS.find(c => c.id === id) || { id, e:"💳", c:"#94a3b8" };
+const hash = s => [...String(s)].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+const gradOf = t => GRADS[hash(t.id || t.name) % GRADS.length];
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 3500); }
 function fail(e){ console.error(e); toast(e.code === "permission-denied" ? "Keine Berechtigung – bitte Firestore-Regeln prüfen." : "Fehler: " + (e.message || e)); }
-
+ 
+function burst(x, y, items){
+  if (reduced) return;
+  for (let i = 0; i < 22; i++){
+    const el = document.createElement("span");
+    el.className = "confetti";
+    el.textContent = items[i % items.length];
+    el.style.left = x + "px"; el.style.top = y + "px";
+    el.style.fontSize = (16 + Math.random() * 18) + "px";
+    document.body.appendChild(el);
+    const a = Math.random() * Math.PI * 2, d = 70 + Math.random() * 150;
+    el.animate([
+      { transform:"translate(-50%,-50%) scale(.3)", opacity:1 },
+      { transform:`translate(calc(-50% + ${Math.cos(a) * d}px), calc(-50% + ${Math.sin(a) * d - 60}px)) rotate(${Math.random() * 540 - 270}deg) scale(1)`, opacity:1, offset:.7 },
+      { transform:`translate(calc(-50% + ${Math.cos(a) * d}px), calc(-50% + ${Math.sin(a) * d + 60}px)) rotate(${Math.random() * 540 - 270}deg) scale(.8)`, opacity:0 }
+    ], { duration:1000 + Math.random() * 600, easing:"cubic-bezier(.2,.8,.3,1)" }).onfinish = () => el.remove();
+  }
+}
+function countUp(el, to, cur){
+  const t0 = performance.now(), dur = 900;
+  const step = now => {
+    const p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = money(to * e, cur);
+    if (p < 1) requestAnimationFrame(step); else el.textContent = money(to, cur);
+  };
+  requestAnimationFrame(step);
+}
+ 
 /* ---------- Zustand ---------- */
-let trips = [];
-let expenses = [];
-let tripId = null;
-let filterCat = null;
-let unsubExp = null;
-let editingExp = null;
-let editingTrip = null;
-let connected = false;
-
+let trips = [], expenses = [];
+let tripId = null, filterCat = null, unsubExp = null;
+let editingExp = null, editingTrip = null;
+let connected = false, expLoaded = false, animateNext = true, lastAdded = null;
+ 
 onSnapshot(collection(db, "ferien"), snap => {
   connected = true;
   trips = snap.docs.map(d => ({ id:d.id, ...d.data() }));
   render();
 }, fail);
-
+ 
 function openTrip(id){
   if (unsubExp) { unsubExp(); unsubExp = null; }
-  tripId = id; filterCat = null; expenses = [];
-  if (id) {
-    unsubExp = onSnapshot(collection(db, "ferien", id, "ausgaben"), snap => {
-      expenses = snap.docs.map(d => ({ id:d.id, ...d.data() }));
-      render();
-    }, fail);
-  }
+  tripId = id; filterCat = null; expenses = []; expLoaded = false; animateNext = true;
+  if (id) unsubExp = onSnapshot(collection(db, "ferien", id, "ausgaben"), snap => {
+    expenses = snap.docs.map(d => ({ id:d.id, ...d.data() }));
+    expLoaded = true; render();
+  }, fail);
   render();
 }
-function route(){
-  const m = location.hash.match(/^#\/trip\/(.+)$/);
-  openTrip(m ? m[1] : null);
-}
+function route(){ const m = location.hash.match(/^#\/trip\/(.+)$/); openTrip(m ? m[1] : null); }
 window.addEventListener("hashchange", route);
-
+ 
 /* ---------- Rendering ---------- */
+const sumFor = l => l.reduce((a, x) => a + (+x.amount || 0), 0);
+ 
 function render(){
+  const app = $("#app");
+  app.classList.toggle("noanim", !animateNext);
   const trip = trips.find(t => t.id === tripId);
   if (tripId && !trip) {
-    $("#head").innerHTML = `<h1>Ferien Kosten</h1>`;
-    $("#app").innerHTML = `<div class="empty">${connected ? "Ferien nicht gefunden." : "Lade…"}<br><br><button class="ghost" style="padding:10px 16px;border:0;border-radius:10px" onclick="location.hash=''">Zur Übersicht</button></div>`;
+    $("#head").innerHTML = `<div style="flex:1"><h1>Ferien Kosten</h1></div>`;
+    app.innerHTML = `<div class="card empty"><span class="big">🧭</span>${connected ? "Diese Reise wurde nicht gefunden." : "Lade…"}</div>`;
     return;
   }
   trip ? renderTrip(trip) : renderHome();
+  afterRender();
+  if (tripId ? expLoaded : connected) animateNext = false;
 }
-
-function sumFor(list){ return list.reduce((a, x) => a + (+x.amount || 0), 0); }
-
+ 
+function afterRender(){
+  const anim = animateNext && !reduced;
+  document.querySelectorAll("[data-count]").forEach(el => {
+    const to = +el.dataset.count, cur = el.dataset.cur;
+    anim ? countUp(el, to, cur) : (el.textContent = money(to, cur));
+  });
+  document.querySelectorAll("circle[data-len]").forEach((c, i) => {
+    const val = `${c.dataset.len} ${c.dataset.c}`;
+    if (!anim) { c.style.transition = "none"; c.style.strokeDasharray = val; return; }
+    c.style.transitionDelay = (i * 80) + "ms";
+    requestAnimationFrame(() => requestAnimationFrame(() => c.style.strokeDasharray = val));
+  });
+}
+ 
 function renderHome(){
-  $("#head").innerHTML = `<div style="flex:1"><h1>🌴 Meine Ferien</h1><div class="sub">${trips.length} Reise${trips.length === 1 ? "" : "n"} <span id="status">${connected ? "· ☁️ synchronisiert" : "· verbinde…"}</span></div></div>`;
+  $("#head").innerHTML = `<span class="bigemoji" id="hello">🌴</span>
+    <div style="flex:1"><h1>Meine Ferien</h1><div class="sub">${connected ? (trips.length ? `${trips.length} Reise${trips.length === 1 ? "" : "n"} gespeichert ☁️` : "Bereit für das erste Abenteuer?") : "Verbinde…"}</div></div>`;
+  $("#hello").onclick = e => { e.target.classList.remove("spin"); void e.target.offsetWidth; e.target.classList.add("spin"); const r = e.target.getBoundingClientRect(); burst(r.x + r.width / 2, r.y + r.height / 2, ["🌴","☀️","🐚","✈️","🍹","🌊"]); };
+ 
   if (!trips.length) {
-    $("#app").innerHTML = `<div class="empty">${connected ? "Noch keine Ferien angelegt.<br>Tippe auf <b>+</b>, um die erste Reise zu erstellen." : "Verbinde mit Firebase…"}</div>`;
+    $("#app").innerHTML = `<div class="card empty rise"><span class="big">🏝️</span>${connected ? "Noch keine Ferien angelegt.<br>Tippe auf das <b>+</b> und leg los!" : "Verbinde mit Firebase…"}</div>`;
     return;
   }
   const byYear = {};
   [...trips].sort((a, b) => (b.start || "").localeCompare(a.start || "")).forEach(t => {
-    const y = (t.start || "").slice(0, 4) || "Ohne Datum";
-    (byYear[y] ||= []).push(t);
+    (byYear[(t.start || "").slice(0, 4) || "Ohne Datum"] ||= []).push(t);
   });
+  let i = 0;
   $("#app").innerHTML = Object.keys(byYear).sort().reverse().map(y => `
-    <div class="year">${y}</div>
+    <div class="year rise" style="--i:${i++}">${y}</div>
     ${byYear[y].map(t => {
-      const spent = t.total || 0;
-      const pct = t.budget > 0 ? Math.min(100, spent / t.budget * 100) : 0;
-      const cls = t.budget > 0 ? (spent > t.budget ? "over" : pct > 85 ? "warn" : "") : "";
-      return `<div class="card trip" data-id="${t.id}">
-        <div class="row"><h3>${esc(t.name)}</h3><b>${money(spent, t.currency)}</b></div>
-        <div class="muted">${fmtDate(t.start)}${t.end ? " – " + fmtDate(t.end) : ""}</div>
-        ${t.budget > 0 ? `<div class="bar ${cls}"><i style="width:${pct}%"></i></div>
-        <div class="muted">Budget ${money(t.budget, t.currency)} · ${spent > t.budget ? `<span class="neg">${money(spent - t.budget, t.currency)} drüber</span>` : `${money(t.budget - spent, t.currency)} übrig`}</div>` : ""}
+      const spent = t.total || 0, b = +t.budget || 0;
+      const pct = b > 0 ? spent / b : 0;
+      const col = pct > 1 ? "var(--danger)" : pct > .85 ? "var(--warn)" : "var(--ok)";
+      const C = 2 * Math.PI * 20, len = Math.min(1, pct) * C;
+      return `<div class="card trip rise" style="--i:${i++}" data-id="${t.id}">
+        <div class="badge" style="--g:${gradOf(t)}">${esc(t.emoji || "🌴")}</div>
+        <div class="mid">
+          <h3>${esc(t.name)}</h3>
+          <div class="muted">${fmtDate(t.start)}${t.end ? " – " + fmtDate(t.end) : ""}</div>
+          <div class="tot" data-count="${spent}" data-cur="${t.currency || "CHF"}">${money(spent, t.currency)}</div>
+        </div>
+        ${b > 0 ? `<div class="mini" title="${money(b, t.currency)} Budget">
+          <svg viewBox="0 0 54 54"><circle cx="27" cy="27" r="20" fill="none" stroke="var(--line)" stroke-width="7"/>
+          <circle class="seg" cx="27" cy="27" r="20" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round"
+            style="stroke-dasharray:0 ${C}" data-len="${len}" data-c="${C}"/></svg>
+          <b class="${pct > 1 ? "neg" : ""}">${Math.round(pct * 100)}%</b></div>` : ""}
       </div>`;
     }).join("")}`).join("");
   document.querySelectorAll(".trip").forEach(el => el.onclick = () => location.hash = "#/trip/" + el.dataset.id);
 }
-
+ 
 function renderTrip(t){
   const cur = t.currency || "CHF";
-  const total = sumFor(expenses);
-  const budget = +t.budget || 0;
-  const left = budget - total;
-  const pct = budget > 0 ? Math.min(100, total / budget * 100) : 0;
-  const cls = budget > 0 ? (total > budget ? "over" : pct > 85 ? "warn" : "") : "";
-
-  $("#head").innerHTML = `<button id="back">←</button>
+  const total = sumFor(expenses), budget = +t.budget || 0, left = budget - total;
+  const pct = budget > 0 ? total / budget : 0;
+ 
+  $("#head").innerHTML = `<button class="hbtn" id="back" aria-label="Zurück">←</button>
+    <span class="bigemoji" id="hello">${esc(t.emoji || "🌴")}</span>
     <div style="flex:1;min-width:0"><h1>${esc(t.name)}</h1><div class="sub">${fmtDate(t.start)}${t.end ? " – " + fmtDate(t.end) : ""}</div></div>
-    <button id="editTrip">✏️</button>`;
+    <button class="hbtn" id="editTrip" aria-label="Bearbeiten">✏️</button>`;
   $("#back").onclick = () => location.hash = "";
   $("#editTrip").onclick = () => openTripDialog(t);
-
+  $("#hello").onclick = e => { e.target.classList.remove("spin"); void e.target.offsetWidth; e.target.classList.add("spin"); const r = e.target.getBoundingClientRect(); burst(r.x + r.width / 2, r.y + r.height / 2, [t.emoji || "🌴","✨","🎉","☀️"]); };
+ 
+  // Ring
+  const R = 80, C = 2 * Math.PI * R;
+  const basis = budget > 0 ? Math.max(budget, total) : (total || 1);
+  const used = CATS.map(c => ({ ...c, v:sumFor(expenses.filter(e => e.category === c.id)) })).filter(c => c.v > 0);
+  let cum = 0;
+  const segs = used.map(c => {
+    const full = c.v / basis * C, gap = used.length > 1 ? Math.min(3, full * .3) : 0;
+    const len = Math.max(0, full - gap);
+    const s = `<circle class="seg" cx="100" cy="100" r="${R}" stroke="${c.c}" stroke-linecap="butt"
+      style="stroke-dasharray:0 ${C};stroke-dashoffset:${-cum}" data-len="${len}" data-c="${C}"/>`;
+    cum += full; return s;
+  }).join("");
+ 
+  const mood = budget <= 0 ? ["Leg ein Budget fest – dann wird's spannend! ✏️", "#8b5cf6"]
+    : total === 0 ? ["Noch nichts ausgegeben – geniess es! 🌅", "#14b8a6"]
+    : pct < .5 ? ["Alles entspannt – weiter so! 😎", "#22c55e"]
+    : pct < .85 ? ["Du bist gut unterwegs 🏄", "#14b8a6"]
+    : pct <= 1 ? ["Achtung, das Budget wird knapp 😅", "#f59e0b"]
+    : ["Budget überschritten 🙈", "#ef4444"];
+ 
+  // Ø pro Tag
+  let perDay = null;
+  if (t.start) {
+    const s = new Date(t.start + "T12:00:00"), nowD = new Date(), e = t.end ? new Date(t.end + "T12:00:00") : nowD;
+    const last = nowD < e ? nowD : e;
+    const days = Math.max(1, Math.floor((last - s) / 864e5) + 1);
+    perDay = total / days;
+  }
+ 
   const list = expenses.filter(e => !filterCat || e.category === filterCat)
     .sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.createdAtMs || 0) - (a.createdAtMs || 0));
   const days = {};
   list.forEach(e => (days[e.date] ||= []).push(e));
-
+ 
+  let i = 0;
   $("#app").innerHTML = `
-    <div class="card">
-      <div class="stats">
-        <div><b>${budget > 0 ? money(budget, cur) : "–"}</b><span>Budget</span></div>
-        <div><b>${money(total, cur)}</b><span>Ausgegeben</span></div>
-        <div><b class="${left < 0 ? "neg" : ""}">${budget > 0 ? money(left, cur) : "–"}</b><span>${left < 0 ? "Überzogen" : "Übrig"}</span></div>
+    <div class="card hero rise" style="--i:${i++}">
+      <div class="ringbox ${pct > 1 ? "over" : ""}">
+        <svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="${R}"/>${segs}</svg>
+        <div class="center">
+          ${budget > 0
+            ? `<span class="lbl">${left < 0 ? "Überzogen" : "Noch übrig"}</span><span class="num ${left < 0 ? "neg" : ""}" data-count="${Math.abs(left)}" data-cur="${cur}">${money(Math.abs(left), cur)}</span>`
+            : `<span class="lbl">Ausgegeben</span><span class="num" data-count="${total}" data-cur="${cur}">${money(total, cur)}</span>`}
+          <span class="em">${budget > 0 ? (left < 0 ? "🔥" : pct > .85 ? "👀" : "🌞") : "💰"}</span>
+        </div>
       </div>
-      ${budget > 0 ? `<div class="bar ${cls}"><i style="width:${pct}%"></i></div><div class="muted" style="text-align:center">${(total / budget * 100).toFixed(0)}% des Budgets</div>` : `<div class="muted" style="text-align:center;margin-top:8px">Kein Budget gesetzt – über ✏️ festlegen</div>`}
+      <div class="mood" style="--mc:${mood[1]}">${mood[0]}</div>
+      <div class="pills">
+        <div class="pill"><b>${budget > 0 ? money(budget, cur) : "–"}</b><span>Budget</span></div>
+        <div class="pill"><b data-count="${total}" data-cur="${cur}">${money(total, cur)}</b><span>Ausgegeben</span></div>
+        <div class="pill"><b>${perDay === null ? "–" : money(perDay, cur)}</b><span>Ø pro Tag</span></div>
+      </div>
     </div>
     <div class="cats">${CATS.map(c => {
       const s = sumFor(expenses.filter(e => e.category === c.id));
-      return `<div class="cat ${filterCat === c.id ? "on" : ""}" data-cat="${esc(c.id)}"><div class="e">${c.e}</div><span class="n">${esc(c.id)}</span><b>${money(s, cur)}</b></div>`;
+      return `<div class="cat rise ${filterCat === c.id ? "on" : ""}" style="--c:${c.c};--i:${i++}" data-cat="${esc(c.id)}"><span class="e">${c.e}</span><span class="n">${esc(c.id)}</span><b>${money(s, cur)}</b></div>`;
     }).join("")}</div>
-    ${filterCat ? `<div class="muted" style="margin:0 4px 8px">Filter: ${esc(filterCat)} (nochmals tippen zum Aufheben)</div>` : ""}
-    ${!list.length ? `<div class="empty">Noch keine Ausgaben.<br>Tippe auf <b>+</b>.</div>` :
+    ${filterCat ? `<div class="muted rise" style="margin:6px 6px 0">Filter: ${esc(filterCat)} · nochmals tippen zum Aufheben</div>` : ""}
+    ${!list.length ? `<div class="card empty rise" style="margin-top:16px;--i:${i++}"><span class="big">🧳</span>${expLoaded ? "Noch keine Ausgaben.<br>Tippe auf das <b>+</b>!" : "Lade…"}</div>` :
       Object.keys(days).sort().reverse().map(d => `
-        <div class="day"><span>${fmtDate(d, true)}</span><span>${money(sumFor(days[d]), cur)}</span></div>
-        ${days[d].map(e => `<div class="exp" data-id="${e.id}">
-          <div class="ic">${catOf(e.category).e}</div>
+        <div class="day rise" style="--i:${Math.min(i++, 14)}"><span>${fmtDate(d, true)}</span><span>${money(sumFor(days[d]), cur)}</span></div>
+        ${days[d].map(e => { const c = catOf(e.category); return `<div class="exp rise ${e.id === lastAdded ? "pop" : ""}" style="--c:${c.c};--i:${Math.min(i++, 14)}" data-id="${e.id}">
+          <div class="ic">${c.e}</div>
           <div class="mid"><div class="t">${esc(e.title)}</div><div class="note">${esc(e.category)}${e.note ? " · " + esc(e.note) : ""}</div></div>
-          <div class="amt">${money(e.amount, cur)}</div></div>`).join("")}`).join("")}`;
-
+          <div class="amt">${money(e.amount, cur)}</div></div>`; }).join("")}`).join("")}`;
+ 
   document.querySelectorAll(".cat").forEach(el => el.onclick = () => { filterCat = filterCat === el.dataset.cat ? null : el.dataset.cat; render(); });
   document.querySelectorAll(".exp").forEach(el => el.onclick = () => openExpDialog(expenses.find(e => e.id === el.dataset.id)));
+  lastAdded = null;
 }
-
-/* ---------- Dialoge: Ausgabe ---------- */
-$("#catSel").innerHTML = CATS.map(c => `<option value="${esc(c.id)}">${c.e} ${esc(c.id)}</option>`).join("");
-
+ 
+/* ---------- Dialog: Ausgabe ---------- */
+$("#catChips").innerHTML = CATS.map(c => `<label class="chip" style="--c:${c.c}"><input type="radio" name="category" value="${esc(c.id)}"><span>${c.e} ${esc(c.id)}</span></label>`).join("");
+ 
 function openExpDialog(e){
   editingExp = e || null;
-  const f = $("#fExp");
-  f.reset();
+  const f = $("#fExp"); f.reset();
   $("#expTitle").textContent = e ? "Ausgabe bearbeiten" : "Neue Ausgabe";
   $("#expDel").style.display = e ? "" : "none";
   f.title.value = e?.title || "";
@@ -285,66 +485,69 @@ function openExpDialog(e){
   f.category.value = e?.category || filterCat || CATS[0].id;
   f.note.value = e?.note || "";
   $("#dlgExp").showModal();
-  if (!e) setTimeout(() => f.title.focus(), 50);
+  if (!e) setTimeout(() => f.title.focus(), 80);
 }
-
 $("#fExp").addEventListener("submit", async ev => {
   ev.preventDefault();
   const f = ev.target;
-  const data = { title:f.title.value.trim(), amount:parseFloat(f.amount.value), date:f.date.value, category:f.category.value, note:f.note.value.trim() };
+  const data = { title:f.title.value.trim(), amount:parseFloat(f.amount.value), date:f.date.value, category:f.category.value || CATS[0].id, note:f.note.value.trim() };
   if (!data.title || isNaN(data.amount)) return;
+  const isNew = !editingExp;
   $("#dlgExp").close();
   try {
-    if (editingExp) await setDoc(doc(db, "ferien", tripId, "ausgaben", editingExp.id), data, { merge:true });
-    else await addDoc(collection(db, "ferien", tripId, "ausgaben"), { ...data, createdAtMs:Date.now() });
+    if (isNew) {
+      const ref = await addDoc(collection(db, "ferien", tripId, "ausgaben"), { ...data, createdAtMs:Date.now() });
+      lastAdded = ref.id;
+      const r = $("#fab").getBoundingClientRect();
+      burst(r.x + r.width / 2, r.y + r.height / 2, [catOf(data.category).e, "✨", "💸"]);
+    } else await setDoc(doc(db, "ferien", tripId, "ausgaben", editingExp.id), data, { merge:true });
     await updateTotal();
   } catch (e) { fail(e); }
 });
-
 $("#expDel").onclick = async () => {
   if (!editingExp || !confirm("Diese Ausgabe löschen?")) return;
   $("#dlgExp").close();
   try { await deleteDoc(doc(db, "ferien", tripId, "ausgaben", editingExp.id)); await updateTotal(); } catch (e) { fail(e); }
 };
-
-// Gesamtsumme in der Reise speichern (für die Übersicht)
 async function updateTotal(){
   const snap = await getDocs(collection(db, "ferien", tripId, "ausgaben"));
   const total = snap.docs.reduce((a, d) => a + (+d.data().amount || 0), 0);
   await setDoc(doc(db, "ferien", tripId), { total }, { merge:true });
 }
-
-/* ---------- Dialoge: Reise ---------- */
+ 
+/* ---------- Dialog: Reise ---------- */
+$("#emojiChips").innerHTML = EMOJIS.map(e => `<label class="chip em"><input type="radio" name="emoji" value="${e}"><span>${e}</span></label>`).join("");
+ 
 function openTripDialog(t){
   editingTrip = t || null;
-  const f = $("#fTrip");
-  f.reset();
+  const f = $("#fTrip"); f.reset();
   $("#tripTitle").textContent = t ? "Ferien bearbeiten" : "Neue Ferien";
   $("#tripDel").style.display = t ? "" : "none";
   f.name.value = t?.name || "";
+  f.emoji.value = t?.emoji || EMOJIS[0];
   f.start.value = t?.start || today();
   f.end.value = t?.end || "";
   f.budget.value = t?.budget || "";
   f.currency.value = t?.currency || "CHF";
   $("#dlgTrip").showModal();
-  if (!t) setTimeout(() => f.name.focus(), 50);
+  if (!t) setTimeout(() => f.name.focus(), 80);
 }
-
 $("#fTrip").addEventListener("submit", async ev => {
   ev.preventDefault();
   const f = ev.target;
-  const data = { name:f.name.value.trim(), start:f.start.value, end:f.end.value, budget:parseFloat(f.budget.value) || 0, currency:f.currency.value };
+  const data = { name:f.name.value.trim(), emoji:f.emoji.value || "🌴", start:f.start.value, end:f.end.value, budget:parseFloat(f.budget.value) || 0, currency:f.currency.value };
   if (!data.name) return;
   $("#dlgTrip").close();
   try {
     if (editingTrip) await setDoc(doc(db, "ferien", editingTrip.id), data, { merge:true });
     else {
+      const r = $("#fab").getBoundingClientRect();
+      burst(r.x + r.width / 2, r.y + r.height / 2, ["🎉","✈️","🌴","☀️","🎊","🌍"]);
       const ref = await addDoc(collection(db, "ferien"), { ...data, total:0, createdAt:serverTimestamp() });
       location.hash = "#/trip/" + ref.id;
     }
   } catch (e) { fail(e); }
 });
-
 $("#tripDel").onclick = async () => {
   if (!editingTrip || !confirm(`„${editingTrip.name}“ samt allen Ausgaben endgültig löschen?`)) return;
   $("#dlgTrip").close();
@@ -357,13 +560,14 @@ $("#tripDel").onclick = async () => {
     location.hash = "";
   } catch (e) { fail(e); }
 };
-
+ 
 /* ---------- Allgemein ---------- */
 document.querySelectorAll("[data-close]").forEach(b => b.onclick = () => b.closest("dialog").close());
 document.querySelectorAll("dialog").forEach(d => d.addEventListener("click", e => { if (e.target === d) d.close(); }));
 $("#fab").onclick = () => tripId ? openExpDialog() : openTripDialog();
-
+ 
 route();
 </script>
 </body>
 </html>
+ 
